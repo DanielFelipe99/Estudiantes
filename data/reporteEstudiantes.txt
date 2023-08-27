@@ -1,0 +1,18 @@
+Reporte de estudiantes
+-----------------------
+----------------------
+Datos del alumno: 
+Nombre daniel
+Apellido: 213123
+Cedula: 213123
+Semestre: 5
+Correo: asdas
+Celular: 21312
+----------------------
+Datos del alumno: 
+Nombre dan
+Apellido: 124245231
+Cedula: 124245231
+Semestre: 5
+Correo: asdas
+Celular: 2231

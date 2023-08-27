@@ -5,6 +5,9 @@
 package estudiantes;
 
 import Mundo.Alumno;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,8 +20,8 @@ public class Estudiantes {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here:
+    public static void main(String[] args) throws FileNotFoundException {
+
         //creacion de la consola para poder ingresar datos
         Scanner consola = new Scanner(System.in);
         int opcion;  
@@ -26,16 +29,7 @@ public class Estudiantes {
        
         //Creacion de un menu principal
         do {            
-            System.out.println("¡Bienvenido!");
-            System.out.println("--------Menu de opciones--------------");
-            System.out.println("Ingresa la operacion c:");
-            System.out.println("1. Ingresar alumno");
-            System.out.println("2. Eliminar alumno");
-            System.out.println("3. Modificar alumno");
-            System.out.println("4. Consultar alumnos");
-            System.out.println("5. Salir");
-            System.out.println("------------------------"); 
-            
+            mostrarMenu();
             opcion = consola.nextInt();
             
             switch (opcion) {
@@ -66,17 +60,35 @@ public class Estudiantes {
                     }    
                     break;
                 case 5:
+                    if(listAlumnos.isEmpty()){
+                        System.out.println("No hay estudiantes registrados para crear un reporte"); 
+                    }else{
+                        crearReporte(listAlumnos);
+                        System.out.println("Registro creado correctamente");
+                    }
+                    
                     break;
                 default:
                     System.out.println("Ingresa una opcion correcta");
             }
             
-        } while (opcion!=5);
+        } while (opcion!=6);
        
     }
-    
-    
-    //metodo para ignresar alumno
+    //metodo para mostrar el menu
+    public static void mostrarMenu(){
+         System.out.println("¡Bienvenido!");
+            System.out.println("--------Menu de opciones--------------");
+            System.out.println("Ingresa la operacion c:");
+            System.out.println("1. Ingresar alumno");
+            System.out.println("2. Eliminar alumno");
+            System.out.println("3. Modificar alumno");
+            System.out.println("4. Consultar alumnos");
+            System.out.println("5. Generar reporte de estudiantes");
+            System.out.println("6. Salir");
+            System.out.println("------------------------");       
+    }
+    //metodo para ingresar alumno
     public static void ingresarAlumno(ArrayList<Alumno> listAlumnos){
            Scanner consola = new Scanner(System.in);
            Alumno miAlumno = new Alumno();//creacion de un objeto tipo Alumno para poder llamar los atributos de la clase alumno
@@ -107,7 +119,7 @@ public class Estudiantes {
            listAlumnos.add(miAlumno);
            
      }
-    //metoido para mostrar alumno
+    //metodo para mostrar alumno
     public static void mostrarAlumno(ArrayList<Alumno> listAlumnos){
         //recorre la lista con un for y muestra los datos guardados en el ArrayList
          for(Alumno alumno : listAlumnos){
@@ -124,7 +136,7 @@ public class Estudiantes {
    
          }
     }
-    //metoido para modificar alumno
+    //metodo para modificar alumno
     public static void modificarAlumno(ArrayList<Alumno> listAlumnos){
         Scanner consola = new Scanner(System.in);
         System.out.println("Ingresa el numero de cedula del estudiante para modificarlo");
@@ -231,5 +243,27 @@ public class Estudiantes {
                     listAlumnos.remove(miAlumno);
                     System.out.println("Alumno eliminado");
                 }
+    }
+    //metodo para crear reporte de alumnos en un txt
+    public static void crearReporte(ArrayList<Alumno> listAlumnos)throws FileNotFoundException{
+        File archivo = new File("./data/reporteEstudiantes.txt");
+        
+        PrintWriter pluma = new PrintWriter(archivo);
+        
+        pluma.println("Reporte de estudiantes");
+        pluma.println("-----------------------");
+        
+        for(Alumno alumno: listAlumnos){
+            pluma.println("----------------------");
+            pluma.println("Datos del alumno: ");
+            pluma.println("Nombre " + alumno.getNombre());
+            pluma.println("Apellido: " + alumno.getCedula());
+            pluma.println("Cedula: " + alumno.getCedula());
+            pluma.println("Semestre: " + alumno.getSemestre());
+            pluma.println("Correo: " + alumno.getCorreo());
+            pluma.println("Celular: " + alumno.getCelular());
+        }
+        
+        pluma.close();
     }
 }
