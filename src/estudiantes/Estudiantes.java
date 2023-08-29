@@ -5,8 +5,11 @@
 package estudiantes;
 
 import Mundo.Alumno;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -20,13 +23,14 @@ public class Estudiantes {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
 
         //creacion de la consola para poder ingresar datos
         Scanner consola = new Scanner(System.in);
-        int opcion;  
+        int opcion; 
         ArrayList<Alumno> listAlumnos = new ArrayList<Alumno>(); //Creacion de una lista para guardar los datos de estudiantes
-       
+        Alumno miAlumno = new Alumno();
+        leerDatos(listAlumnos);
         //Creacion de un menu principal
         do {            
             mostrarMenu();
@@ -37,11 +41,14 @@ public class Estudiantes {
                     ingresarAlumno(listAlumnos);
                     break;
                 case 2:
+
                     if(listAlumnos.isEmpty()){
-                        System.out.println("No hay estudiantes registrados para eliminar");
+                      System.out.println("No hay estudiantes registrados para eliminar");
                     }else{
-                       eliminarAlumno(listAlumnos);
-                    }
+                        eliminarAlumno(listAlumnos);
+                        eliminarDatos(listAlumnos);
+                       
+                  }
                     
                     break;
                 case 3:
@@ -57,22 +64,23 @@ public class Estudiantes {
                         System.out.println("No hay estudiantes registrados");
                     }else{
                         mostrarAlumno(listAlumnos);
+                        
                     }    
                     break;
                 case 5:
-                    if(listAlumnos.isEmpty()){
-                        System.out.println("No hay estudiantes registrados para crear un reporte"); 
-                    }else{
-                        crearReporte(listAlumnos);
-                        System.out.println("Registro creado correctamente");
-                    }
-                    
+                        crearReporte(listAlumnos, consola);
+
+                    break;
+                case 6:
+                    eliminarDatos(listAlumnos);
+                    crearReporte(listAlumnos, consola);
                     break;
                 default:
                     System.out.println("Ingresa una opcion correcta");
+                break;    
             }
             
-        } while (opcion!=6);
+        } while (opcion!=7);
        
     }
     //metodo para mostrar el menu
@@ -84,8 +92,9 @@ public class Estudiantes {
             System.out.println("2. Eliminar alumno");
             System.out.println("3. Modificar alumno");
             System.out.println("4. Consultar alumnos");
-            System.out.println("5. Generar reporte de estudiantes");
-            System.out.println("6. Salir");
+            System.out.println("5. Generar reporte de estudiantes por semestre");
+            System.out.println("6. Eliminar reportes de estudiantes");
+            System.out.println("7. Salir");
             System.out.println("------------------------");       
     }
     //metodo para ingresar alumno
@@ -105,7 +114,7 @@ public class Estudiantes {
            miAlumno.setApellido(apellido);
            
            System.out.println("Ingresa el semestre del estudiante:");
-           int semestre = consola.nextInt();
+           String semestre = consola.nextLine();
            miAlumno.setSemestre(semestre);
            
            System.out.println("Ingresa el correo del estudiante:");
@@ -177,9 +186,9 @@ public class Estudiantes {
                         break;
                         case 3:
                             System.out.print("Ingrese el semestre a modificar: ");
-                            int semestreModificado = consola.nextInt();
+                            String semestreModificado = consola.nextLine();
                         
-                            if(semestreModificado != 0){
+                            if(semestreModificado.isEmpty()){
                                 alumno.setSemestre(semestreModificado);
                             }
                         break;
@@ -245,25 +254,74 @@ public class Estudiantes {
                 }
     }
     //metodo para crear reporte de alumnos en un txt
-    public static void crearReporte(ArrayList<Alumno> listAlumnos)throws FileNotFoundException{
+    public static void crearReporte(ArrayList<Alumno> listAlumnos , Scanner consola)throws FileNotFoundException{
         File archivo = new File("./data/reporteEstudiantes.txt");
         
         PrintWriter pluma = new PrintWriter(archivo);
         
-        pluma.println("Reporte de estudiantes");
-        pluma.println("-----------------------");
+        if(!listAlumnos.isEmpty()){
+            System.out.println("Ingrese el semestre para generar el reporte");
+            String semestreCreado = consola.next();
         
-        for(Alumno alumno: listAlumnos){
-            pluma.println("----------------------");
-            pluma.println("Datos del alumno: ");
-            pluma.println("Nombre " + alumno.getNombre());
-            pluma.println("Apellido: " + alumno.getCedula());
-            pluma.println("Cedula: " + alumno.getCedula());
-            pluma.println("Semestre: " + alumno.getSemestre());
-            pluma.println("Correo: " + alumno.getCorreo());
-            pluma.println("Celular: " + alumno.getCelular());
+            pluma.println("Reporte de estudiantes");
+            pluma.println("-----------------------");
+            System.out.println("Reporte creado");
+            for(Alumno alumno: listAlumnos){
+            if(alumno.getSemestre().equals(semestreCreado))
+                pluma.println("----------------------");
+                pluma.println("Datos del alumno: ");
+                pluma.println("Nombre: " + alumno.getNombre());
+                pluma.println("Apellido: " + alumno.getApellido());
+                pluma.println("Cedula: " + alumno.getCedula());
+                pluma.println("Semestre: " + alumno.getSemestre());
+                pluma.println("Correo: " + alumno.getCorreo());
+                pluma.println("Celular: " + alumno.getCelular());
+
+          }  
+             pluma.close();
+        }else{
+            System.out.println("No hay estudiantes de dicho semestre registrados");
+        }
+    
+       
+    }
+    
+    public static void leerDatos(ArrayList<Alumno> listAlumnos)throws IOException{
+        File archivo = new File("./data/reporteEstudiantes.txt");
+       
+       
+        try(FileReader fail = new FileReader(archivo)){
+            BufferedReader cx = new BufferedReader(fail);
+            
+            if((cx.readLine()) != null){
+                String datos[];
+                datos = new String[6];        
+                
+                String cedula = datos[0];
+                String nombre = datos [1];
+                String apellido = datos [2];
+                String semestre = datos [3];
+                String correo = datos [4];
+                String celular = datos [5];
+                
+            
+                Alumno miAlumno = new Alumno(nombre, apellido, semestre, correo, celular, cedula);
+                listAlumnos.add(miAlumno);
+            
+            }
+        }catch(FileNotFoundException e){
+            System.out.println("No existe ningun archivo");
+        }
+    }
+    
+    public static void eliminarDatos(ArrayList<Alumno> listAlumnos){
+        if(!listAlumnos.isEmpty()){
+            listAlumnos.clear();
+            System.out.println("Se ha eliminado el reporte");
+        }else{
+            System.out.println("No hay datos que eliminar");
         }
         
-        pluma.close();
+    
     }
 }

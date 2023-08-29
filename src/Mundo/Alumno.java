@@ -13,7 +13,7 @@ package Mundo;
 public class Alumno {
     private String nombre;
     private String apellido;
-    private int semestre;
+    private String semestre;
     private String correo;
     private String celular;
     private String cedula; 
@@ -23,7 +23,7 @@ public class Alumno {
     }
 
     //Constructor con parametros
-    public Alumno(String nombre, String apellido, int semestre, String correo, String celular, String cedula) {
+    public Alumno(String nombre, String apellido, String semestre, String correo, String celular, String cedula) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.semestre = semestre;
@@ -50,11 +50,11 @@ public class Alumno {
         this.apellido = apellido;
     }
 
-    public int getSemestre() {
+    public String getSemestre() {
         return semestre;
     }
 
-    public void setSemestre(int semestre) {
+    public void setSemestre(String semestre) {
         this.semestre = semestre;
     }
 
